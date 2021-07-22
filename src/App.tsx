@@ -36,7 +36,8 @@ const App: React.FC = () => {
 	};
 
 	const toggleModal = () => {
-		setActiveModal((flag) => !flag);
+		console.clear();
+		setActiveModal((isActive) => !isActive);
 		setActiveTask(INITIAL_STATE);
 	};
 
