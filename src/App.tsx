@@ -17,7 +17,7 @@ const INITIAL_STATE = {
 };
 
 const App: React.FC = () => {
-	const [isCompleted, setIsCompleted] = useState(false);
+	const [filterTask, setFilterTask] = useState('all');
 	const [taskList, setTaskList] = useState<ITask[]>([]);
 	const [isModal, setIsModal] = useState(false);
 	const [activeTask, setActiveTask] = useState<ITask>(INITIAL_STATE);
@@ -92,10 +92,16 @@ const App: React.FC = () => {
 									<FaPlus />
 								</button>
 							</div>
-							{<TabList isCompleted={isCompleted} setIsCompleted={setIsCompleted} />}
+							{<TabList filter={filterTask} setFilter={setFilterTask} />}
 							<ul className='list-group list-group-flush border-top-0'>
 								{taskList
-									.filter((task) => isCompleted === task.completed)
+									.filter((task) =>
+										filterTask === 'completed'
+											? task.completed
+											: filterTask === 'pending'
+											? !task.completed
+											: task
+									)
 									.map((task) => (
 										<Row
 											key={task.id}

@@ -1,22 +1,28 @@
 import React from 'react';
 
 interface IProps {
-	isCompleted: boolean;
-	setIsCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+	filter: string;
+	setFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const TabList: React.FC<IProps> = ({ isCompleted, setIsCompleted }) => {
+const TabList: React.FC<IProps> = ({ filter, setFilter }) => {
 	return (
 		<div className='nav nav-tabs'>
 			<span
-				className={isCompleted ? 'nav-link active' : 'nav-link'}
-				onClick={() => setIsCompleted(true)}
+				className={filter === 'all' ? 'nav-link active' : 'nav-link'}
+				onClick={() => setFilter('all')}
+			>
+				All
+			</span>
+			<span
+				className={filter === 'completed' ? 'nav-link active' : 'nav-link'}
+				onClick={() => setFilter('completed')}
 			>
 				Completed
 			</span>
 			<span
-				className={isCompleted ? 'nav-link' : 'nav-link active'}
-				onClick={() => setIsCompleted(false)}
+				className={filter === 'pending' ? 'nav-link active' : 'nav-link'}
+				onClick={() => setFilter('pending')}
 			>
 				Incomplete
 			</span>
