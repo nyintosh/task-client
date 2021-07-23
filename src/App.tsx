@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { FaPlus } from 'react-icons/fa';
 import axios from 'axios';
 
 import { ITask } from './interfaces';
-import { TabList, Row, Modal } from './components';
+import { TabList, Row, Modal, Preloader } from './components';
 
 const INITIAL_STATE = {
 	completed: false,
@@ -20,6 +21,7 @@ const App: React.FC = () => {
 	const [taskList, setTaskList] = useState<ITask[]>([]);
 	const [isModal, setIsModal] = useState(false);
 	const [activeTask, setActiveTask] = useState<ITask>(INITIAL_STATE);
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
 		syncTasks();
@@ -27,11 +29,14 @@ const App: React.FC = () => {
 
 	const syncTasks = async () => {
 		try {
+			setIsLoaded(false);
 			const res = await axios.get('/api/todo/');
 			const data = await res.data;
 			setTaskList(data);
 		} catch (e) {
 			console.log(e.response?.data);
+		} finally {
+			setIsLoaded(true);
 		}
 	};
 
@@ -45,7 +50,8 @@ const App: React.FC = () => {
 
 	const handleDelete = async (task: ITask) => {
 		try {
-			await axios.delete(`/api/todo/${task.id}`);
+			setIsLoaded(false);
+			await axios.delete(`/api/todo/${task.id}/`);
 			syncTasks();
 		} catch (e) {
 			console.log(e.response?.data);
@@ -61,6 +67,7 @@ const App: React.FC = () => {
 		modalToggle();
 
 		try {
+			setIsLoaded(false);
 			if (item.id) {
 				await axios.put(`/api/todo/${item.id}/`, item);
 				return syncTasks();
@@ -73,36 +80,39 @@ const App: React.FC = () => {
 	};
 
 	return (
-		<main className='container'>
-			<h1 className='text-white text-center my-4'>Tasks™</h1>
-			<div className='row'>
-				<div className='col-md-6 col-sm-10 mx-auto p-0'>
-					<div className='card p-3'>
-						<div className='mb-4'>
-							<button className='btn btn-primary' onClick={handleAdd}>
-								Add Task
-							</button>
+		<>
+			<Preloader active={!isLoaded} />
+			<main className='container'>
+				<h1 className='text-white text-center my-4'>Tasks™</h1>
+				<div className='row'>
+					<div className='col-md-6 col-sm-10 mx-auto p-0'>
+						<div className='card p-3'>
+							<div className='mb-4'>
+								<button className='mbtn btn btn-primary' onClick={handleAdd}>
+									<FaPlus />
+								</button>
+							</div>
+							{<TabList isCompleted={isCompleted} setIsCompleted={setIsCompleted} />}
+							<ul className='list-group list-group-flush border-top-0'>
+								{taskList
+									.filter((task) => isCompleted === task.completed)
+									.map((task) => (
+										<Row
+											key={task.id}
+											handleDelete={handleDelete}
+											handleEdit={handleEdit}
+											task={task}
+										/>
+									))}
+							</ul>
 						</div>
-						{<TabList isCompleted={isCompleted} setIsCompleted={setIsCompleted} />}
-						<ul className='list-group list-group-flush border-top-0'>
-							{taskList
-								.filter((task) => isCompleted === task.completed)
-								.map((task) => (
-									<Row
-										key={task.id}
-										handleDelete={handleDelete}
-										handleEdit={handleEdit}
-										task={task}
-									/>
-								))}
-						</ul>
 					</div>
 				</div>
-			</div>
-			{isModal && (
-				<Modal activeTask={activeTask} toggle={modalToggle} onSave={handleSubmit} />
-			)}
-		</main>
+				{isModal && (
+					<Modal activeTask={activeTask} toggle={modalToggle} onSave={handleSubmit} />
+				)}
+			</main>
+		</>
 	);
 };
 

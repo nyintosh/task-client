@@ -23,3 +23,7 @@ In the project directory, you can run:
 -   It correctly bundles React in production mode and optimizes the build for the best performance.
 -   The build is minified and the filenames include the hashes.
 -   Your app is ready to be deployed!
+
+## Author
+
+&copy; NYI NYI HTUN [`Portfolio`](https://nyintosh.github.io) [`Facebook`](https://facebook.com/nyintosh) [`LinkedIn`](https://www.linkedin.com/in/nyintosh)

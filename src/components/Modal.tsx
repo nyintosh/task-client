@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import {
+	Button,
+	Form,
+	FormGroup,
+	Input,
+	Label,
+	Modal,
+	ModalBody,
+	ModalFooter,
+	ModalHeader,
+} from 'reactstrap';
 
 import { ITask } from '../interfaces';
 
@@ -90,7 +100,13 @@ const CustomModal: React.FC<IProps> = ({ activeTask, toggle, onSave }) => {
 					</FormGroup>
 					<FormGroup className='mb-3'>
 						<Label for='task-date'>Date</Label>
-						<Input id='task-date' type='date' name='date' value={currentTask.date} onChange={handleChange} />
+						<Input
+							id='task-date'
+							type='date'
+							name='date'
+							value={currentTask.date}
+							onChange={handleChange}
+						/>
 					</FormGroup>
 					<FormGroup className='mb-2'>
 						<Label for='task-completed'>
