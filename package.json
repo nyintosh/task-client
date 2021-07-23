@@ -2,7 +2,7 @@
 	"name": "task",
 	"version": "0.1.0",
 	"private": true,
-	"proxy": "",
+	"proxy": "https://nyanhtettasks.herokuapp.com",
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",
