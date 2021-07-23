@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { ITask } from './interfaces';
-import { Modal } from './components';
+import { TabList, Row, Modal } from './components';
 
 const INITIAL_STATE = {
 	completed: false,
@@ -18,90 +18,58 @@ const INITIAL_STATE = {
 const App: React.FC = () => {
 	const [isCompleted, setIsCompleted] = useState(false);
 	const [taskList, setTaskList] = useState<ITask[]>([]);
-	const [activeModal, setActiveModal] = useState(false);
+	const [isModal, setIsModal] = useState(false);
 	const [activeTask, setActiveTask] = useState<ITask>(INITIAL_STATE);
 
 	useEffect(() => {
-		fetchTasks();
+		syncTasks();
 	}, []);
 
-	const fetchTasks = async () => {
+	const syncTasks = async () => {
 		try {
-			const res = await axios.get('https://nyanhtettasks.herokuapp.com/api/todo/');
+			const res = await axios.get('/api/todo/');
 			const data = await res.data;
 			setTaskList(data);
 		} catch (e) {
-			console.log(e.response.data);
+			console.log(e.response?.data);
 		}
 	};
 
-	const toggleModal = () => {
+	const modalToggle = () => {
 		console.clear();
-		setActiveModal((isActive) => !isActive);
+		setIsModal((isActive) => !isActive);
 		setActiveTask(INITIAL_STATE);
 	};
 
-	const handleSubmit = async (item: ITask) => {
-		toggleModal();
+	const handleAdd = () => setIsModal(true);
 
+	const handleDelete = async (task: ITask) => {
 		try {
-			if (item.id) {
-				await axios.put(`https://nyanhtettasks.herokuapp.com/api/todo/${item.id}/`, item);
-				return fetchTasks();
-			}
-			await axios.post('https://nyanhtettasks.herokuapp.com/api/todo/', item);
-			fetchTasks();
+			await axios.delete(`/api/todo/${task.id}`);
+			syncTasks();
 		} catch (e) {
-			console.log(e.response.data);
+			console.log(e.response?.data);
 		}
 	};
 
 	const handleEdit = (task: ITask) => {
-		setActiveModal(true);
+		setIsModal(true);
 		setActiveTask(task);
 	};
 
-	const handleDelete = async (task: ITask) => {
+	const handleSubmit = async (item: ITask) => {
+		modalToggle();
+
 		try {
-			await axios.delete(`https://nyanhtettasks.herokuapp.com/api/todo/${task.id}`);
-			fetchTasks();
+			if (item.id) {
+				await axios.put(`/api/todo/${item.id}/`, item);
+				return syncTasks();
+			}
+			await axios.post('/api/todo/', item);
+			syncTasks();
 		} catch (e) {
-			console.log(e.response.data);
+			console.log(e.response?.data);
 		}
-	};
-
-	const handleAdd = () => setActiveModal(true);
-
-	const renderTabList = () => (
-		<div className='nav nav-tabs'>
-			<span className={isCompleted ? 'nav-link active' : 'nav-link'} onClick={() => setIsCompleted(true)}>
-				Completed
-			</span>
-			<span className={isCompleted ? 'nav-link' : 'nav-link active'} onClick={() => setIsCompleted(false)}>
-				Incomplete
-			</span>
-		</div>
-	);
-
-	const renderItems = () => {
-		const tasks = taskList.filter((todo) => isCompleted === todo.completed);
-
-		return tasks.map((task) => (
-			<li key={task.id} className='list-group-item d-flex justify-content-between align-items-center'>
-				<div className='ms-2 me-auto'>
-					<div className='fw-bold fs-5'>{task.title}</div>
-					{task.description}
-				</div>
-				<span>
-					<button className='btn btn-secondary me-2' onClick={() => handleEdit(task)}>
-						Edit
-					</button>
-					<button className='btn btn-danger' onClick={() => handleDelete(task)}>
-						Delete
-					</button>
-				</span>
-			</li>
-		));
 	};
 
 	return (
@@ -115,12 +83,25 @@ const App: React.FC = () => {
 								Add Task
 							</button>
 						</div>
-						{renderTabList()}
-						<ul className='list-group list-group-flush border-top-0'>{renderItems()}</ul>
+						{<TabList isCompleted={isCompleted} setIsCompleted={setIsCompleted} />}
+						<ul className='list-group list-group-flush border-top-0'>
+							{taskList
+								.filter((task) => isCompleted === task.completed)
+								.map((task) => (
+									<Row
+										key={task.id}
+										handleDelete={handleDelete}
+										handleEdit={handleEdit}
+										task={task}
+									/>
+								))}
+						</ul>
 					</div>
 				</div>
 			</div>
-			{activeModal && <Modal activeTask={activeTask} toggle={toggleModal} onSave={handleSubmit} />}
+			{isModal && (
+				<Modal activeTask={activeTask} toggle={modalToggle} onSave={handleSubmit} />
+			)}
 		</main>
 	);
 };
