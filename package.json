@@ -2,7 +2,9 @@
 	"name": "task",
 	"version": "0.1.0",
 	"private": true,
-	"proxy": "https://nyanhtettasks.herokuapp.com",
+	"engines": {
+		"node": "14.17.1"
+	},
 	"scripts": {
 		"start": "react-scripts start",
 		"build": "react-scripts build",

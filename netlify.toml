@@ -1,6 +1,0 @@
-[[redirect]]
-  from = "/api/*"
-  to = "https://nyanhtettasks.herokuapp.com"
-  status = 200
-  force = true
-  headers = {X-Form = "Netlify"}

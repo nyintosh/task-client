@@ -27,7 +27,7 @@ const App: React.FC = () => {
 
 	const fetchTasks = async () => {
 		try {
-			const res = await axios.get('/api/todo/');
+			const res = await axios.get('https://nyanhtettasks.herokuapp.com/api/todo/');
 			const data = await res.data;
 			setTaskList(data);
 		} catch (e) {
@@ -46,10 +46,10 @@ const App: React.FC = () => {
 
 		try {
 			if (item.id) {
-				await axios.put(`/api/todo/${item.id}/`, item);
+				await axios.put(`https://nyanhtettasks.herokuapp.com/api/todo/${item.id}/`, item);
 				return fetchTasks();
 			}
-			await axios.post('/api/todo/', item);
+			await axios.post('https://nyanhtettasks.herokuapp.com/api/todo/', item);
 			fetchTasks();
 		} catch (e) {
 			console.log(e.response.data);
@@ -63,7 +63,7 @@ const App: React.FC = () => {
 
 	const handleDelete = async (task: ITask) => {
 		try {
-			await axios.delete(`/api/todo/${task.id}`);
+			await axios.delete(`https://nyanhtettasks.herokuapp.com/api/todo/${task.id}`);
 			fetchTasks();
 		} catch (e) {
 			console.log(e.response.data);
