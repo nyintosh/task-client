@@ -1,6 +1,6 @@
 ## Software Requirement
 
--   NodeJS 14.17.3 or later [Download Here](https://nodejs.org/en/download/)
+-   NodeJS 14.x or later [Download Here](https://nodejs.org/en/download/)
 
 ## Available Scripts
 
