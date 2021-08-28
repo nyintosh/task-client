@@ -33,7 +33,7 @@ const App: React.FC = () => {
 			const res = await axios.get('/api/todo/');
 			const data = await res.data;
 			setTaskList(data);
-		} catch (e) {
+		} catch (e: any) {
 			console.log(e.response?.data);
 		} finally {
 			setIsLoaded(true);
