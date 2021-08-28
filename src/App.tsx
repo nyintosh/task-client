@@ -53,7 +53,7 @@ const App: React.FC = () => {
 			setIsLoaded(false);
 			await axios.delete(`/api/todo/${task.id}/`);
 			syncTasks();
-		} catch (e) {
+		} catch (e: any) {
 			console.log(e.response?.data);
 		}
 	};
@@ -74,7 +74,7 @@ const App: React.FC = () => {
 			}
 			await axios.post('/api/todo/', item);
 			syncTasks();
-		} catch (e) {
+		} catch (e: any) {
 			console.log(e.response?.data);
 		}
 	};
